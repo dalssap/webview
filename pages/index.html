@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>홈 - 웹뷰 샘플</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
+  <div class="page-container">
+    <!-- 헤더 -->
+    <header class="page-header">
+      <h1 class="page-header__title">홈</h1>
+      <a href="webview://close" class="close-button" aria-label="닫기">✕</a>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="page-content">
+      <!-- 환영 카드 -->
+      <div class="card fade-in">
+        <h2 class="card__title">웹뷰 프로젝트에 오신 것을 환영합니다</h2>
+        <p class="card__content">
+          이 페이지는 앱 내에서 웹뷰로 표시되는 샘플 페이지입니다.
+          Alpine.js를 사용하여 경량화되고 인터랙티브한 UI를 제공합니다.
+        </p>
+      </div>
+
+      <!-- 기능 리스트 -->
+      <div class="card" x-data="{ features: [
+        { id: 1, title: '페이지 닫기', description: 'webview://close로 앱 복귀' },
+        { id: 2, title: '반응형 디자인', description: '다양한 모바일 화면 크기 지원' },
+        { id: 3, title: 'Alpine.js', description: '경량 JavaScript 프레임워크' },
+        { id: 4, title: '터치 최적화', description: '44px 이상 터치 영역' }
+      ] }">
+        <h3 class="card__title">주요 기능</h3>
+        <ul class="list">
+          <template x-for="feature in features" :key="feature.id">
+            <li class="list-item">
+              <div>
+                <div class="list-item__title" x-text="feature.title"></div>
+                <div class="list-item__description" x-text="feature.description"></div>
+              </div>
+            </li>
+          </template>
+        </ul>
+      </div>
+
+      <!-- 인터랙티브 카운터 예시 -->
+      <div class="card" x-data="{ count: 0 }">
+        <h3 class="card__title">Alpine.js 예시: 카운터</h3>
+        <p class="card__content mb-3">
+          버튼을 클릭하여 카운트를 증가시켜보세요.
+        </p>
+        <div class="text-center">
+          <p style="font-size: 48px; font-weight: 600; margin-bottom: 16px;" x-text="count"></p>
+          <button @click="count++" class="btn btn--primary">
+            카운트 증가
+          </button>
+          <button @click="count = 0" class="btn btn--secondary mt-1">
+            초기화
+          </button>
+        </div>
+      </div>
+
+      <!-- 토글 예시 -->
+      <div class="card" x-data="{ showDetails: false }">
+        <h3 class="card__title">Alpine.js 예시: 토글</h3>
+        <button @click="showDetails = !showDetails" class="btn btn--outline btn--full mb-2">
+          <span x-text="showDetails ? '내용 숨기기' : '내용 보기'"></span>
+        </button>
+        <div x-show="showDetails" x-transition class="card__content">
+          <p>
+            이것은 Alpine.js의 <code>x-show</code> 디렉티브를 사용한 토글 기능입니다.
+            버튼을 클릭하면 이 내용이 표시되거나 숨겨집니다.
+          </p>
+        </div>
+      </div>
+
+      <!-- 페이지 링크 -->
+      <div class="card">
+        <h3 class="card__title">다른 페이지</h3>
+        <a href="detail.html" class="btn btn--primary btn--full">
+          상세 페이지로 이동
+        </a>
+      </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="page-footer">
+      <button onclick="window.location.href='webview://close'" class="btn btn--secondary btn--full">
+        앱으로 돌아가기
+      </button>
+    </footer>
+  </div>
+</body>
+</html>

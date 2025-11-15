@@ -1,0 +1,32 @@
+<!--
+  닫기 버튼 컴포넌트
+
+  사용 방법:
+  1. 헤더에 심볼 형태로 배치
+  2. 하단에 풀 버튼으로 배치
+
+  이 파일을 페이지에 복사하여 사용하세요.
+-->
+
+<!-- 방법 1: 헤더 심볼 닫기 버튼 (✕) -->
+<a href="webview://close" class="close-button" aria-label="닫기">✕</a>
+
+<!-- 방법 2: 헤더 텍스트 닫기 버튼 -->
+<a href="webview://close" class="close-button close-button--text" aria-label="닫기">닫기</a>
+
+<!-- 방법 3: 하단 풀 버튼 -->
+<button onclick="window.location.href='webview://close'" class="btn btn--secondary btn--full">
+  닫기
+</button>
+
+<!-- 방법 4: Alpine.js 사용 -->
+<button @click="window.location.href='webview://close'" class="close-button" aria-label="닫기">
+  ✕
+</button>
+
+<!-- 방법 5: 아이콘과 함께 사용 (SVG) -->
+<a href="webview://close" class="close-button" aria-label="닫기">
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+</a>

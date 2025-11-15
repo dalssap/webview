@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>상세 페이지 - 웹뷰 샘플</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
+  <div class="page-container" x-data="detailPage()">
+    <!-- 헤더 -->
+    <header class="page-header">
+      <h1 class="page-header__title">상세 페이지</h1>
+      <a href="webview://close" class="close-button" aria-label="닫기">✕</a>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="page-content">
+      <!-- 뒤로 가기 -->
+      <div class="mb-3">
+        <a href="index.html" class="btn btn--outline">← 홈으로 돌아가기</a>
+      </div>
+
+      <!-- 사용자 정보 카드 -->
+      <div class="card">
+        <h2 class="card__title">사용자 정보</h2>
+        <div class="list">
+          <div class="list-item">
+            <div>
+              <div class="list-item__title">이름</div>
+              <div class="list-item__description" x-text="user.name"></div>
+            </div>
+          </div>
+          <div class="list-item">
+            <div>
+              <div class="list-item__title">이메일</div>
+              <div class="list-item__description" x-text="user.email"></div>
+            </div>
+          </div>
+          <div class="list-item">
+            <div>
+              <div class="list-item__title">가입일</div>
+              <div class="list-item__description" x-text="user.joinDate"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 할 일 목록 -->
+      <div class="card">
+        <h3 class="card__title">할 일 목록</h3>
+        <p class="card__content mb-2">
+          Alpine.js를 사용한 인터랙티브 할 일 목록입니다.
+        </p>
+
+        <!-- 할 일 추가 폼 -->
+        <form @submit.prevent="addTodo" class="mb-3">
+          <div class="form-group">
+            <input
+              type="text"
+              x-model="newTodo"
+              class="form-input"
+              placeholder="새 할 일 입력..."
+              required
+            >
+          </div>
+          <button type="submit" class="btn btn--primary btn--full">
+            추가하기
+          </button>
+        </form>
+
+        <!-- 할 일 리스트 -->
+        <div x-show="todos.length > 0">
+          <ul class="list">
+            <template x-for="(todo, index) in todos" :key="index">
+              <li class="list-item" style="justify-content: space-between;">
+                <div style="flex: 1;">
+                  <div
+                    class="list-item__title"
+                    x-text="todo.text"
+                    :style="todo.completed ? 'text-decoration: line-through; opacity: 0.5;' : ''"
+                  ></div>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button
+                    @click="toggleTodo(index)"
+                    class="btn btn--secondary"
+                    style="min-height: 36px; padding: 8px 16px; font-size: 14px;"
+                    x-text="todo.completed ? '취소' : '완료'"
+                  ></button>
+                  <button
+                    @click="deleteTodo(index)"
+                    class="btn btn--outline"
+                    style="min-height: 36px; padding: 8px 16px; font-size: 14px; border-color: #ff3b30; color: #ff3b30;"
+                  >
+                    삭제
+                  </button>
+                </div>
+              </li>
+            </template>
+          </ul>
+          <div class="mt-2 text-center">
+            <p style="font-size: 14px; color: #666;">
+              총 <span x-text="todos.length"></span>개 항목 |
+              완료 <span x-text="completedCount"></span>개
+            </p>
+          </div>
+        </div>
+
+        <div x-show="todos.length === 0" class="text-center" style="padding: 40px 20px; color: #999;">
+          할 일이 없습니다. 위에서 추가해보세요!
+        </div>
+      </div>
+
+      <!-- 설정 예시 -->
+      <div class="card">
+        <h3 class="card__title">설정</h3>
+        <div class="list">
+          <div class="list-item" style="justify-content: space-between;">
+            <div class="list-item__title">알림 받기</div>
+            <label style="display: flex; align-items: center;">
+              <input
+                type="checkbox"
+                x-model="settings.notifications"
+                style="width: 44px; height: 24px; cursor: pointer;"
+              >
+            </label>
+          </div>
+          <div class="list-item" style="justify-content: space-between;">
+            <div class="list-item__title">자동 저장</div>
+            <label style="display: flex; align-items: center;">
+              <input
+                type="checkbox"
+                x-model="settings.autoSave"
+                style="width: 44px; height: 24px; cursor: pointer;"
+              >
+            </label>
+          </div>
+        </div>
+        <div class="mt-3" style="padding: 12px; background-color: #f5f5f5; border-radius: 8px; font-size: 14px;">
+          <strong>현재 설정:</strong>
+          <pre style="margin-top: 8px; white-space: pre-wrap; word-wrap: break-word;" x-text="JSON.stringify(settings, null, 2)"></pre>
+        </div>
+      </div>
+
+      <!-- 로딩 상태 예시 -->
+      <div class="card">
+        <h3 class="card__title">로딩 상태 예시</h3>
+        <button @click="simulateLoading" class="btn btn--primary btn--full mb-2">
+          데이터 불러오기
+        </button>
+        <div x-show="loading" class="loading-container">
+          <div class="spinner"></div>
+          <span style="margin-left: 12px; color: #666;">로딩 중...</span>
+        </div>
+        <div x-show="!loading && loadedData" class="card__content">
+          <p><strong>불러온 데이터:</strong></p>
+          <p x-text="loadedData"></p>
+        </div>
+      </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="page-footer">
+      <button onclick="window.location.href='webview://close'" class="btn btn--secondary btn--full">
+        닫기
+      </button>
+    </footer>
+  </div>
+
+  <script>
+    function detailPage() {
+      return {
+        // 사용자 정보
+        user: {
+          name: '홍길동',
+          email: 'hong@example.com',
+          joinDate: '2025-01-01'
+        },
+
+        // 할 일 목록
+        todos: [
+          { text: '프로젝트 구조 만들기', completed: true },
+          { text: 'CSS 스타일 작성하기', completed: true },
+          { text: '샘플 페이지 만들기', completed: false }
+        ],
+        newTodo: '',
+
+        // 설정
+        settings: {
+          notifications: true,
+          autoSave: false
+        },
+
+        // 로딩 상태
+        loading: false,
+        loadedData: null,
+
+        // 완료된 할 일 개수 계산
+        get completedCount() {
+          return this.todos.filter(todo => todo.completed).length;
+        },
+
+        // 할 일 추가
+        addTodo() {
+          if (this.newTodo.trim()) {
+            this.todos.push({
+              text: this.newTodo.trim(),
+              completed: false
+            });
+            this.newTodo = '';
+          }
+        },
+
+        // 할 일 완료 토글
+        toggleTodo(index) {
+          this.todos[index].completed = !this.todos[index].completed;
+        },
+
+        // 할 일 삭제
+        deleteTodo(index) {
+          this.todos.splice(index, 1);
+        },
+
+        // 로딩 시뮬레이션
+        simulateLoading() {
+          this.loading = true;
+          this.loadedData = null;
+
+          setTimeout(() => {
+            this.loading = false;
+            this.loadedData = '데이터를 성공적으로 불러왔습니다! 현재 시간: ' + new Date().toLocaleTimeString('ko-KR');
+          }, 2000);
+        }
+      };
+    }
+  </script>
+</body>
+</html>
